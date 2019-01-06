@@ -12,6 +12,8 @@ class AdventureGame( object ):
         # Room 0 is for deleted or destroyed items
         _ = self.createRoom( "The Void" )
 
+        self.curr_loc = None
+
     def createRoom( self, name ):
         new_room = Room( name, self )
         self.locations[ name ] = new_room
@@ -28,6 +30,23 @@ class AdventureGame( object ):
         self.itm_lut[ new_room.ID ] = name
         return new_item
 
+    def populate( self, dict, mode ):
+        if( mode == "room" ):
+            # create rooms
+            for room in dict.keys():
+                self.createRoom( room )
+            # update room data
+            for name, data in dict.iteritems():
+                room = self.locations[ name ]
+                for at in ["desc_short", "desc_long"]:
+                    setattr( room, at, data[at] )
+                # set navigation
+                for i, val in enumerate( data["navigation"] ):
+                    room.navigation[i] = val
+                    
+        elif( mode == "item" ):
+            # create items
+            
     def play( self ):
         self.playing = True
         while( self.playing ):
@@ -35,7 +54,7 @@ class AdventureGame( object ):
             # get location
             curr_loc_id = self.player.location
             curr_loc_name = self.loc_lut[ curr_loc_id ]
-            curr_loc = self.locations[ curr_loc_name ]
+            self.curr_loc = self.locations[ curr_loc_name ]
             # get default actions
             # get nouns (items in location)
             loc_items = curr_loc.getContents()
@@ -148,9 +167,13 @@ class Room( Aobj ):
             info = "Nothing special is visible."
         return info
 
-    def nav( self, orient ):
+    def getNav( self, orient ):
         idx = self.NAVIGATION_DIRECTIONS.index( orient )
         return self.navigation[ idx ]
+
+    def onEnter( self ):
+        # script executed when player enters the room
+        pass
 
 
 class Actor( Aobj ):
@@ -166,4 +189,38 @@ class Player( Actor ):
         self.location = -1
         self.ID = -1
         self.contents = [] # inventory
-        self.actions = {}
+        self.actions = {
+            "move" : {
+                "synon"  : ["go", "walk", "head"],
+                "action" : self.doMove
+            },
+            "look" :{
+                "synon"  : ["examine", "inspect", "search"],
+                "action" : self.doLook
+            },
+            "help" : {
+                "synon"  : ["comands", "manual", "fucks sake"],
+                "action" : self.doHelp
+            },
+        }
+
+    def doMove( self, **kwags ):
+        orientation = kwags["noun"]
+        # test suitability
+        curr_loc = self.game.curr_loc
+        target = curr_loc.getNav( orientation )
+        if( target is None ):
+            # that's a fail
+            print "You can't move that way"
+            return
+        tgt_loc = self.game.locations[ target ]
+        self.location = tgt_loc.ID
+        tgt_loc.onEnter()
+
+    def doLook( self, **kwags ):
+        # try running the noun's 'look' action. look without noun is look around the room
+        pass
+
+    def doHelp( self, **kwags ):
+        # give the user some suggestions
+        pass

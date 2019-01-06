@@ -32,7 +32,7 @@ rooms = {
         "desc_long"  : "Various plant pots are scattered around",
     },
     "Stairs": {
-        "navigation" : [None,None,None,None"Upstairs Landing", "Dining Room"],
+        "navigation" : [None,None,None,None,"Upstairs Landing", "Dining Room"],
         "desc_short" : "The Stairs",
         "desc_long"  : "There's nothing unusual about them",
     },
@@ -57,6 +57,7 @@ rooms = {
         "desc_long"  : "",
     }, """
 }
+
 items = {
     "Door Mat" : {
         "name" : "Door Mat",
@@ -83,3 +84,7 @@ items = {
         "actions"    : "",
     }, """
 }
+
+advent = ADV.AdventureGame()
+advent.populate( rooms, mode="room" )
+advent.populate( items, mode="item" )
