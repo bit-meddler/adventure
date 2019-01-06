@@ -27,7 +27,7 @@ class AdventureGame( object ):
         self.items[ name ] = new_item
         self.itm_count += 1
         new_item.ID = self.itm_count
-        self.itm_lut[ new_room.ID ] = name
+        self.itm_lut[ new_item.ID ] = name
         return new_item
 
     def populate( self, dict, mode ):
@@ -38,15 +38,19 @@ class AdventureGame( object ):
             # update room data
             for name, data in dict.iteritems():
                 room = self.locations[ name ]
-                for at in ["desc_short", "desc_long"]:
-                    setattr( room, at, data[at] )
+                for at in ["desc_short", "desc_long", "preposition"]:
+                    if at in data:
+                        setattr( room, at, data[at] )
                 # set navigation
                 for i, val in enumerate( data["navigation"] ):
                     room.navigation[i] = val
-                    
+
         elif( mode == "item" ):
             # create items
-            
+            for item in dict.keys():
+                self.createItem( item )
+            # update item data
+
     def play( self ):
         self.playing = True
         while( self.playing ):
@@ -57,20 +61,20 @@ class AdventureGame( object ):
             self.curr_loc = self.locations[ curr_loc_name ]
             # get default actions
             # get nouns (items in location)
-            loc_items = curr_loc.getContents()
+            loc_items = self.curr_loc.getContents()
             # get verbs enabled by nouns
             # register synonyms
 
             # describe situation
             # room
-            print( "You are {} {}.".format( curr_loc.retort() ) )
+            print( "You are {} {}.".format( *self.curr_loc.retort() ) )
             # contents
-            print( curr_loc.listContents( loc_items ) )
+            print( self.curr_loc.listContents( loc_items ) )
             # exits
-            print( curr_loc.getExits() )
+            print( self.curr_loc.getExits() )
 
             # get command
-
+            command = raw_input( ">" )
             # parse to verb [prep] noun [[artical] [prep2] [noun2]]
             verb = "move"
             noun = "north"
@@ -120,7 +124,7 @@ class Room( Aobj ):
         self.contents    = []
         self.population  = []
         self.encountered = False
-        self.preposition = ""
+        self.preposition = "in"
 
     def retort( self ):
         if( self.encountered ):

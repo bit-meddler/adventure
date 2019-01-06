@@ -4,7 +4,8 @@ rooms = {
     "Front Garden" : {
         "navigation" : ["Living Room"],
         "desc_short" : "The Front Garden",
-        "desc_long"  : "It is overgrown, with a large thorny bush",
+        "desc_long"  : "Begining of all adventures.  It is overgrown, with a large thorny bush",
+        "preposition": "at",
     },
     "Living Room" : {
         "navigation" : ["Cellar Landing", None, "Front Garden"],
@@ -36,6 +37,8 @@ rooms = {
         "desc_short" : "The Stairs",
         "desc_long"  : "There's nothing unusual about them",
     },
+}
+
 """    "": {
         "navigation" : [""],
         "desc_short" : "",
@@ -56,35 +59,36 @@ rooms = {
         "desc_short" : "",
         "desc_long"  : "",
     }, """
-}
 
 items = {
     "Door Mat" : {
         "name" : "Door Mat",
-        "syns" : "Welcome Mat,Mat",
-        "visi" : True,
-        "desc_short" : "Door Mat"
+        "synon" : "Welcome Mat,Mat",
+        "visible" : True,
+        "desc_short" : "Door Mat",
         "desc_long"  : "It say's 'Welcome'",
         "actions"    : ["get"]
     },
     "Front Door Key" : {
         "name" : "Front Door Key",
-        "syns" : "Key",
-        "visi" : False,
-        "desc_short" : "Front Door Key"
+        "synon" : "Key",
+        "visible" : False,
+        "desc_short" : "Front Door Key",
         "desc_long"  : "It's on a fob that says 'Timpson'",
         "actions"    : ["get","use"]
     },
+}
 """        "" : {
         "name" : "",
-        "syns" : "",
-        "visi" : True,
-        "desc_short" : ""
+        "synon" : "",
+        "visible" : True,
+        "desc_short" : "",
         "desc_long"  : "",
         "actions"    : "",
     }, """
-}
 
 advent = ADV.AdventureGame()
 advent.populate( rooms, mode="room" )
 advent.populate( items, mode="item" )
+advent.player.location = advent.locations[ "Front Garden" ].ID
+advent.play()
