@@ -65,7 +65,6 @@ class Aobj( object ):
         self.game = game
         self.noun = ""
         self.verb = ""
-        self.syno = []
         self.ID   = -1
         self.visible = True
         # descriptions
@@ -153,7 +152,7 @@ class Room( Aobj ):
         idx = self.NAVIGATION_DIRECTIONS.index( orient )
         return self.navigation[ idx ]
 
-        
+
 class Actor( Aobj ):
     """ Actor """
     def __init__( self, name, game ):
