@@ -39,7 +39,7 @@ class AdventureGame( object ):
             for name, data in dict.iteritems():
                 room = self.locations[ name ]
                 for at in ["desc_short", "desc_long", "preposition"]:
-                    if at in data:
+                    if at in data:  
                         setattr( room, at, data[at] )
                 # set navigation
                 for i, val in enumerate( data["navigation"] ):
@@ -193,7 +193,7 @@ class Player( Actor ):
         self.location = -1
         self.ID = -1
         self.contents = [] # inventory
-        self.actions = {
+        self.actions = {   # Default actions
             "move" : {
                 "synon"  : ["go", "walk", "head"],
                 "action" : self.doMove
